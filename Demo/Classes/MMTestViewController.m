@@ -103,11 +103,16 @@
                                         MMvalueY: @3,
                                         MMselectedObject:_selectedString,
                                         MMtextAlignment:@1}
+                           selected:^(NSString *selectedString) {
+                               
+                               _label.text = selectedString;
+                               _selectedString = selectedString;
+                           }
                            completion:^(NSString *selectedString) {
    
                              _label.text = selectedString;
                              _selectedString = selectedString;
-   }];
+                           }];
   
   
   

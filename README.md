@@ -40,14 +40,16 @@ You can show the PickerView:
 ```objective-c
 +(void)showPickerViewInView: (UIView *)view
                 withStrings: (NSArray *)strings
-                withOptions: (NSDictionary *)options
+                withOptions: (NSDictionary *)options,
+                   selected: (void(^)(NSString *selectedString))selected
                  completion: (void(^)(NSString *selectedString))completion;
 
 +(void)showPickerViewInView: (UIView *)view
                 withObjetcs: (NSArray *)objects
                 withOptions: (NSDictionary *)options
     objectToStringConverter: (NSString *(^)(id object))converter
-       			 completion: (void(^)(id selectedObject))completion;
+                   selected: (void(^)(NSString *selectedString))selected
+       			     completion: (void(^)(id selectedObject))completion;
 ```
 
 
@@ -59,10 +61,14 @@ You can show the PickerView:
   [MMPickerView showPickerViewInView:self.view
                          withStrings:strings
                          withOptions:nil
-                          completion:^(NSString *selectedString) {
-   							//selectedString is the return value which you can use as you wish
-                            self.label.text = selectedString;
-  }];
+                         selected:^(NSString *selectedString) {
+                           //selectedString is the return value when the selected item change
+                           self.label.text = selectedString;
+                         }
+                         completion:^(NSString *selectedString) {
+   							           //selectedString is the return value after user hit Done button
+                           self.label.text = selectedString;
+                         }];
 ```
 
 #### Example 2 - Show with an array of objects.
@@ -73,16 +79,19 @@ You can show the PickerView:
   [MMPickerView showPickerViewInView:self.view
    						 withObjects:objects
 					     withOptions:nil
-		    objectToStringConverter:^NSString *(id object) {
-			//This is where you convert your object and return a string, for eg. return person.name;
-	          return [object description];
-   
-              }
-						 completion:^(id selectedObject) {
-					     //The selected object is returned, and you can use the value as you wish
-					     //For example: self.label.text = person.name;
-					     self.label.text = [selectedObject description];
-  }];
+		           objectToStringConverter:^NSString *(id object) {
+			           //This is where you convert your object and return a string, for eg. return person.name;
+	               return [object description];
+               }
+               selected:^(id selectedObject) {
+                 //selectedObject: The selected object when the selected item change
+                 self.label.text = [selectedObject description];
+               }
+						   completion:^(id selectedObject) {
+					       //selectedObject: The selected object after user hit Done button
+					       //For example: self.label.text = person.name;
+					       self.label.text = [selectedObject description];
+               }];
 ```
 
 ### Customizing MMPickerView
@@ -100,6 +109,7 @@ Both show methods use a `NSDictionary` to set the options of the `MMPickerView`.
 - `MMselectedObject` - `id` 
 - `MMtoolbarBackgroundImage` - `UIImage`
 - `MMtextAlignment` - `NSNumber`
+- `MMspaceBottom` - `NSNumber`
 
 ```objective-c
   /*
@@ -113,6 +123,7 @@ Both show methods use a `NSDictionary` to set the options of the `MMPickerView`.
   MMselectedObject - id - The selected object presented in the PickerView, an object from the array, for eg. [yourArray objectAtIndex:0];
   MMtoolbarBackgroundImage - UIImage - The background image of the toolbar (320 x 44 for non retina, 640 x 88 for retina)
   MMtextAlignment - NSNumber - The text alignment of the labels in the PickerView, @0 for Left, @1 for Center, @2 for Right
+  MMspaceBottom - NSNumber - If the picker view is combined with a bottom bar (such as tabbar) set a MMspaceBottom with the height of bar.
  */
 ```
 
@@ -132,8 +143,12 @@ Both show methods use a `NSDictionary` to set the options of the `MMPickerView`.
   [MMPickerView showPickerViewInView:self.view
                          withStrings:strings
                          withOptions:options
+                          selected:^(NSString *selectedString) {
+                            //selectedString is the return value when the selected item change
+                            self.label.text = selectedString;
+                          }
                           completion:^(NSString *selectedString) {
-                            //selectedString is the return value which you can use as you wish
+                            //selectedString is the return value after user hit Done button
                             self.label.text = selectedString;
                           }];
 ```
@@ -173,11 +188,13 @@ A useful feature is to let the PickerView select whatever was selected last time
   [MMPickerView showPickerViewInView:self.view
                          withStrings:strings
                          withOptions:@{selectedObject:_selectedString}
-                          completion:^(NSString *selectedString) {
-    
-                            _label.text = selectedString;
-                            _selectedString = selectedString;
-  }];
+                         selected:^(NSString *selectedString) {
+                           _label.text = selectedString;
+                         }
+                         completion:^(NSString *selectedString) {
+                           _label.text = selectedString;
+                           _selectedString = selectedString;
+                         }];
   
 }
 
