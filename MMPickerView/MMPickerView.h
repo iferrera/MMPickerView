@@ -25,14 +25,12 @@ extern NSString * const MMspaceBottom;
 +(void)showPickerViewInView: (UIView *)view
                 withStrings: (NSArray *)strings
                 withOptions: (NSDictionary *)options
-                   selected: (void (^)(NSString *))selected
                  completion: (void(^)(NSString *selectedString))completion;
 
 +(void)showPickerViewInView: (UIView *)view
                 withObjects: (NSArray *)objects
                 withOptions: (NSDictionary *)options
     objectToStringConverter: (NSString *(^)(id object))converter
-                   selected: (void (^)(NSString *))selected
                  completion: (void(^)(id selectedObject))completion;
 
 +(void)dismissWithCompletion: (void(^)(NSString *))completion;
